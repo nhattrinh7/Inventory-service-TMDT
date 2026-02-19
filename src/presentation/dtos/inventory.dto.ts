@@ -25,3 +25,10 @@ export const createInventoryBodySchema = createInventorySchema.extend({
   stock: z.number().min(0),
 })
 export class CreateInventoryBodyDto extends createZodDto(createInventoryBodySchema) {}
+
+export const checkInventoryToMinusSchema = z.object({
+  productVariantId: z.uuid(),
+  quantity: z.number().min(0),
+})
+export class CheckInventoryToMinusBodyDto extends createZodDto(checkInventoryToMinusSchema) {}
+export class CheckInventoryToPlusBodyDto extends createZodDto(checkInventoryToMinusSchema) {}

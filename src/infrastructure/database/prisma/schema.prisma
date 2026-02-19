@@ -30,11 +30,11 @@ model Inventory {
   @@index([productVariantId])
   @@index([shopId, availableQuantity])
   @@index([availableQuantity])
-  @@map("inventories")
+  @@map("inventories") 
 }
 
 model Reservation {
-  id                  String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                  String            @id @db.Uuid
   inventoryId         String            @map("inventory_id") @db.Uuid
   
   orderId             String            @map("order_id") @db.Uuid
@@ -46,8 +46,8 @@ model Reservation {
   
   confirmedAt         DateTime?         @map("confirmed_at") @db.Timestamptz
   cancelledAt         DateTime?         @map("cancelled_at") @db.Timestamptz
-  failedAt            DateTime?         @map("failed_at") @db.Timestamptz
   cancellationReason  String?           @map("cancellation_reason") @db.Text
+  // failedAt            DateTime?         @map("failed_at") @db.Timestamptz
   
   createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz
   
@@ -66,6 +66,6 @@ enum ReservationStatus {
   CONFIRMED  // Đã thanh toán thành công
   EXPIRED    // Hết hạn 15 phút chưa thanh toán
   CANCELLED  // User hủy đơn
-  // FAILED     // Thanh toán thất bại
+  FAILED     // Thanh toán thất bại
 }
 
