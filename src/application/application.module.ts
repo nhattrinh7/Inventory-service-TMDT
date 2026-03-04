@@ -9,11 +9,15 @@ import { UpdateInventoryHandler } from '~/application/commands/update-inventory/
 import { SoftDeleteInventoryHandler } from '~/application/commands/soft-delete-inventory/soft-delete-inventory.command.handler'
 import { CheckInventoryToMinusHandler } from '~/application/queries/check-inventory-to-minus/check-inventory-to-minus.query.handler'
 import { CheckInventoryToPlusHandler } from '~/application/queries/check-inventory-to-plus/check-inventory-to-plus.query.handler'
+import { SagaReserveInventoryHandler } from './commands/saga-reserve-inventory/saga-reserve-inventory.command.handler'
+import { SagaReleaseInventoryHandler } from './commands/saga-release-inventory/saga-release-inventory.command.handler'
 
 const CommandHandlers = [
   CreateInventoryHandler,
   UpdateInventoryHandler,
   SoftDeleteInventoryHandler,
+  SagaReserveInventoryHandler,
+  SagaReleaseInventoryHandler,
 ]
 
 const QueryHandlers = [

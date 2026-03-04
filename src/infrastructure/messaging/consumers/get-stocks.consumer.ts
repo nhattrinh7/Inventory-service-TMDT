@@ -18,9 +18,8 @@ export class GetStocksConsumer extends BaseRetryConsumer {
     @Payload() data: GetStocksPayload,
     @Ctx() context: RmqContext,
   ) {
-    console.log('Event get.stocks received:', data)
-
     const result = await this.handleWithRetry(context, async () => {
+      this.logger.log(`Event get.stocks received, count=${data.productIds?.length}`)
       const result = await this.queryBus.execute(new GetStocksQuery(data.productIds))
       return result
     }) 

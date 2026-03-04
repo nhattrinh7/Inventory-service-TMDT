@@ -27,16 +27,9 @@ export class ProductUpdatedConsumer extends BaseRetryConsumer {
     @Payload() event: ProductUpdatedEvent,
     @Ctx() context: RmqContext,
   ) {
-    console.log('Event product.updated received:', event)
-    
-    // Destructure event data
-    const { stockUpdates, variantsToCreate, variantsToDelete } = event.data
-    
-    console.log('stockUpdates:', stockUpdates)
-    console.log('variantsToCreate:', variantsToCreate)
-    console.log('variantsToDelete:', variantsToDelete)
-
     await this.handleWithRetry(context, async () => {
+      const { stockUpdates, variantsToCreate, variantsToDelete } = event.data
+      this.logger.log(`Event product.updated received, stockUpdates=${stockUpdates?.length ?? 0}, variantsToCreate=${variantsToCreate?.length ?? 0}, variantsToDelete=${variantsToDelete?.length ?? 0}`)
       // 1. Update stocks cho variants hiện có
       if (stockUpdates && stockUpdates.length > 0) {
         await this.commandBus.execute(new UpdateInventoryCommand(stockUpdates))

@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Logger } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { SoftDeleteInventoryCommand } from '~/application/commands/soft-delete-inventory/soft-delete-inventory.command'
 import { INVENTORY_REPOSITORY, type IInventoryRepository } from '~/domain/repositories/inventory.repository.interface'
@@ -17,7 +17,5 @@ export class SoftDeleteInventoryHandler implements ICommandHandler<SoftDeleteInv
 
     // Soft delete inventories theo variantIds
     await this.inventoryRepository.softDeleteByVariantIds(variantIds)
-    
-    console.log(`Soft deleted ${variantIds.length} inventories for variants:`, variantIds)
   }
 }

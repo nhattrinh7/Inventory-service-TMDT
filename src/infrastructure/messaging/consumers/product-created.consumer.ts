@@ -17,9 +17,8 @@ export class ProductCreatedConsumer extends BaseRetryConsumer {
     @Payload() data: any,
     @Ctx() context: RmqContext,
   ) {
-    console.log('Event product.created received:', data)
-
     await this.handleWithRetry(context, async () => {
+      this.logger.log(`Event product.created received, variants=${data.variants?.length}`)
       await this.commandBus.execute(new CreateInventoryCommand(data.variants))
     })
   }

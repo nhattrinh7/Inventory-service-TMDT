@@ -8,5 +8,12 @@ export interface IInventoryRepository {
   updateStocks(variants: Array<{ productVariantId: string; availableQuantity: number; totalQuantity: number }>): Promise<void>
   softDeleteByVariantIds(variantIds: string[]): Promise<void>
   getBuyCountAndIsInStockByVariantIds(productVariantIds: string[]): Promise<{ buyCount: number; isInStock: boolean }>
+  checkInventory(items: Array<{ productVariantId: string; quantity: number }>): Promise<void>
+
+  // Saga atomic operations
+  findByProductVariantIdOrThrow(productVariantId: string, tx?: any): Promise<Inventory>
+  decrementAvailableAndIncrementReserved(productVariantId: string, quantity: number, tx?: any): Promise<void>
+  incrementAvailableAndDecrementReserved(inventoryId: string, quantity: number, tx?: any): Promise<void>
 }
 export const INVENTORY_REPOSITORY = Symbol('IInventoryRepository')
+

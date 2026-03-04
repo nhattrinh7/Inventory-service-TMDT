@@ -7,6 +7,7 @@ import { ProductCreatedConsumer } from '~/infrastructure/messaging/consumers/pro
 import { ProductUpdatedConsumer } from '~/infrastructure/messaging/consumers/product-updated.consumer'
 import { GetStocksConsumer } from '~/infrastructure/messaging/consumers/get-stocks.consumer'
 import { GetBuyCountConsumer } from '~/infrastructure/messaging/consumers/get-buy-count.consumer'
+import { SagaInventoryConsumer } from '~/infrastructure/messaging/consumers/saga-inventory.consumer'
 
 @Module({
   imports: [
@@ -21,6 +22,15 @@ import { GetBuyCountConsumer } from '~/infrastructure/messaging/consumers/get-bu
           persistent: true,
         },
       },
+      {
+        name: 'SAGA_CLIENT',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://admin:admin123@localhost:5672'],
+          queue: 'saga_queue',
+          persistent: true,
+        },
+      },
     ]),
   ],
   controllers: [
@@ -28,6 +38,7 @@ import { GetBuyCountConsumer } from '~/infrastructure/messaging/consumers/get-bu
     ProductUpdatedConsumer,
     GetStocksConsumer,
     GetBuyCountConsumer,
+    SagaInventoryConsumer,
   ],
   providers: [
     {

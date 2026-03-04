@@ -15,8 +15,6 @@ export class CreateInventoryHandler implements ICommandHandler<CreateInventoryCo
   async execute(command: CreateInventoryCommand) {
     const { variants } = command
 
-    console.log('variants', variants)
-
     const inventories = variants.map(item =>
       Inventory.create({
         productId: item.productId,
@@ -26,8 +24,6 @@ export class CreateInventoryHandler implements ICommandHandler<CreateInventoryCo
       })
     )
 
-    console.log('inventories', inventories)
-    
     await this.inventoryRepository.createMany(inventories)
   }
 }

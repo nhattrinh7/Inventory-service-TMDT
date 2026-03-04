@@ -36,8 +36,9 @@ model Inventory {
 model Reservation {
   id                  String            @id @db.Uuid
   inventoryId         String            @map("inventory_id") @db.Uuid
+  sagaId              String            @map("saga_id") @db.Uuid
   
-  orderId             String            @map("order_id") @db.Uuid
+  orderId             String?           @map("order_id") @db.Uuid
   userId              String            @map("user_id") @db.Uuid
   
   quantity            Int               // Số lượng hàng được giữ của 1 món hàng trong order
@@ -47,13 +48,13 @@ model Reservation {
   confirmedAt         DateTime?         @map("confirmed_at") @db.Timestamptz
   cancelledAt         DateTime?         @map("cancelled_at") @db.Timestamptz
   cancellationReason  String?           @map("cancellation_reason") @db.Text
-  // failedAt            DateTime?         @map("failed_at") @db.Timestamptz
   
   createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz
   
   // Relations
   inventory           Inventory         @relation(fields: [inventoryId], references: [id])
   
+  @@index([sagaId])
   @@index([orderId])
   @@index([inventoryId, status])
   @@index([status, expiresAt])

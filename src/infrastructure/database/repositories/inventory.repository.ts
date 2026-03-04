@@ -119,4 +119,56 @@ export class InventoryRepository implements IInventoryRepository {
 
     return { buyCount, isInStock }
   }
+
+  async checkInventory(items: Array<{ productVariantId: string; quantity: number }>): Promise<void> {
+    for (const item of items) {
+      const inventory = await this.prisma.inventory.findUnique({
+        where: { productVariantId: item.productVariantId },
+      })
+
+      if (!inventory) {
+        throw new Error(`Không tìm thấy tồn kho cho variant ${item.productVariantId}`)
+      }
+
+      if (inventory.availableQuantity < item.quantity) {
+        throw new Error(`Sản phẩm ${item.productVariantId} không đủ số lượng (còn ${inventory.availableQuantity}, cần ${item.quantity})`)
+      }
+    }
+  }
+
+  async findByProductVariantIdOrThrow(productVariantId: string, tx?: any): Promise<Inventory> {
+    const client = tx ?? this.prisma
+    const inventory = await client.inventory.findUnique({
+      where: { productVariantId },
+    })
+
+    if (!inventory) {
+      throw new Error(`Không tìm thấy tồn kho cho variant ${productVariantId}`)
+    }
+
+    return InventoryMapper.toDomain(inventory)
+  }
+
+  async decrementAvailableAndIncrementReserved(productVariantId: string, quantity: number, tx?: any): Promise<void> {
+    const client = tx ?? this.prisma
+    await client.inventory.update({
+      where: { productVariantId },
+      data: {
+        availableQuantity: { decrement: quantity },
+        reservedQuantity: { increment: quantity },
+      },
+    })
+  }
+
+  async incrementAvailableAndDecrementReserved(inventoryId: string, quantity: number, tx?: any): Promise<void> {
+    const client = tx ?? this.prisma
+    await client.inventory.update({
+      where: { id: inventoryId },
+      data: {
+        availableQuantity: { increment: quantity },
+        reservedQuantity: { decrement: quantity },
+      },
+    })
+  }
 }
+
