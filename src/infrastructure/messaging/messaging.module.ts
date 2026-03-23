@@ -8,6 +8,7 @@ import { ProductUpdatedConsumer } from '~/infrastructure/messaging/consumers/pro
 import { GetStocksConsumer } from '~/infrastructure/messaging/consumers/get-stocks.consumer'
 import { GetBuyCountConsumer } from '~/infrastructure/messaging/consumers/get-buy-count.consumer'
 import { SagaInventoryConsumer } from '~/infrastructure/messaging/consumers/saga-inventory.consumer'
+import { OrderDeliveryConsumer } from '~/infrastructure/messaging/consumers/order-delivery.consumer'
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { SagaInventoryConsumer } from '~/infrastructure/messaging/consumers/saga
     GetStocksConsumer,
     GetBuyCountConsumer,
     SagaInventoryConsumer,
+    OrderDeliveryConsumer,
   ],
   providers: [
     {

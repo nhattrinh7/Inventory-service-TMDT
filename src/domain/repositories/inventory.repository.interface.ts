@@ -14,6 +14,8 @@ export interface IInventoryRepository {
   findByProductVariantIdOrThrow(productVariantId: string, tx?: any): Promise<Inventory>
   decrementAvailableAndIncrementReserved(productVariantId: string, quantity: number, tx?: any): Promise<void>
   incrementAvailableAndDecrementReserved(inventoryId: string, quantity: number, tx?: any): Promise<void>
+  updateQuantityAfterDeliverySuccess(productVariantId: string, quantity: number, tx?: any): Promise<void>
+  updateQuantityAfterDeliveryFail(productVariantId: string, quantity: number, tx?: any): Promise<void>
 }
 export const INVENTORY_REPOSITORY = Symbol('IInventoryRepository')
 

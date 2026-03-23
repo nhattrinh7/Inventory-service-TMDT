@@ -11,6 +11,8 @@ import { CheckInventoryToMinusHandler } from '~/application/queries/check-invent
 import { CheckInventoryToPlusHandler } from '~/application/queries/check-inventory-to-plus/check-inventory-to-plus.query.handler'
 import { SagaReserveInventoryHandler } from './commands/saga-reserve-inventory/saga-reserve-inventory.command.handler'
 import { SagaReleaseInventoryHandler } from './commands/saga-release-inventory/saga-release-inventory.command.handler'
+import { DeliverySuccessInventoryHandler } from './commands/delivery-success-inventory/delivery-success-inventory.command.handler'
+import { DeliveryFailInventoryHandler } from './commands/delivery-fail-inventory/delivery-fail-inventory.command.handler'
 
 const CommandHandlers = [
   CreateInventoryHandler,
@@ -18,6 +20,8 @@ const CommandHandlers = [
   SoftDeleteInventoryHandler,
   SagaReserveInventoryHandler,
   SagaReleaseInventoryHandler,
+  DeliverySuccessInventoryHandler,
+  DeliveryFailInventoryHandler,
 ]
 
 const QueryHandlers = [

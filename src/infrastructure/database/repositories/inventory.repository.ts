@@ -170,5 +170,28 @@ export class InventoryRepository implements IInventoryRepository {
       },
     })
   }
+
+  async updateQuantityAfterDeliverySuccess(productVariantId: string, quantity: number, tx?: any): Promise<void> {
+    const client = tx ?? this.prisma
+    await client.inventory.update({
+      where: { productVariantId },
+      data: {
+        totalQuantity: { decrement: quantity },
+        reservedQuantity: { decrement: quantity },
+        soldQuantity: { increment: quantity },
+      },
+    })
+  }
+
+  async updateQuantityAfterDeliveryFail(productVariantId: string, quantity: number, tx?: any): Promise<void> {
+    const client = tx ?? this.prisma
+    await client.inventory.update({
+      where: { productVariantId },
+      data: {
+        availableQuantity: { increment: quantity },
+        reservedQuantity: { decrement: quantity },
+      },
+    })
+  }
 }
 
