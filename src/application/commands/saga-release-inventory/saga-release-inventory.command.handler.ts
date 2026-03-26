@@ -7,6 +7,7 @@ import type { IReservationRepository } from '~/domain/repositories/reservation.r
 import { RESERVATION_REPOSITORY } from '~/domain/repositories/reservation.repository.interface'
 import { PrismaService } from '~/infrastructure/database/prisma/prisma.service'
 import { ReservationStatus } from '~/domain/enums/reservation.enum'
+import { PRISMA_TX_MAX_WAIT, PRISMA_TX_TIMEOUT } from '~/common/constants/index.constants'
 
 @CommandHandler(SagaReleaseInventoryCommand)
 export class SagaReleaseInventoryHandler implements ICommandHandler<SagaReleaseInventoryCommand> {
@@ -41,6 +42,6 @@ export class SagaReleaseInventoryHandler implements ICommandHandler<SagaReleaseI
         // Cập nhật trạng thái reservation
         await this.reservationRepository.update(reservation, tx)
       }
-    }, { maxWait: 10000, timeout: 15000 })
+    }, { maxWait: PRISMA_TX_MAX_WAIT, timeout: PRISMA_TX_TIMEOUT })
   }
 }

@@ -7,6 +7,7 @@ import type { IReservationRepository } from '~/domain/repositories/reservation.r
 import { RESERVATION_REPOSITORY } from '~/domain/repositories/reservation.repository.interface'
 import { PrismaService } from '~/infrastructure/database/prisma/prisma.service'
 import { Reservation } from '~/domain/entities/reservation.entity'
+import { PRISMA_TX_MAX_WAIT, PRISMA_TX_TIMEOUT } from '~/common/constants/index.constants'
 
 @CommandHandler(SagaReserveInventoryCommand)
 export class SagaReserveInventoryHandler implements ICommandHandler<SagaReserveInventoryCommand> {
@@ -50,7 +51,7 @@ export class SagaReserveInventoryHandler implements ICommandHandler<SagaReserveI
 
         reservationIds.push(reservation.id)
       }
-    }, { maxWait: 10000, timeout: 15000 })
+    }, { maxWait: PRISMA_TX_MAX_WAIT, timeout: PRISMA_TX_TIMEOUT })
 
     return {
       success: true,
