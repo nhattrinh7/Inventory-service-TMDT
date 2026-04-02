@@ -27,6 +27,7 @@ model Inventory {
   // Relations
   reservations Reservation[]
   
+  @@index([productId, isDeleted])
   @@index([productVariantId])
   @@index([shopId, availableQuantity])
   @@index([availableQuantity])
@@ -69,4 +70,3 @@ enum ReservationStatus {
   CANCELLED  // User hủy đơn
   FAILED     // Thanh toán thất bại
 }
-
