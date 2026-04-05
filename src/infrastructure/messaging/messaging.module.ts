@@ -18,7 +18,7 @@ import { OrderDeliveryConsumer } from '~/infrastructure/messaging/consumers/orde
         name: 'NOTIFICATION_CLIENT',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:admin123@localhost:5672'],
+          urls: [`amqp://admin:admin123@${process.env.RABBITMQ_HOST || 'localhost'}:5672`],
           queue: 'notification_queue',
           persistent: true,
         },
@@ -27,7 +27,7 @@ import { OrderDeliveryConsumer } from '~/infrastructure/messaging/consumers/orde
         name: 'SAGA_CLIENT',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://admin:admin123@localhost:5672'],
+          urls: [`amqp://admin:admin123@${process.env.RABBITMQ_HOST || 'localhost'}:5672`],
           queue: 'saga_queue',
           persistent: true,
         },
