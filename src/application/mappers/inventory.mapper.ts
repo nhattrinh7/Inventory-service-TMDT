@@ -2,7 +2,7 @@ import { Inventory } from '~/domain/entities/inventory.entity'
 import { InventoryDto } from '~/presentation/dtos/inventory.dto'
 
 export class InventoryMapper {
-  static toInventoryResponse (inventory: Inventory): InventoryDto {
+  static toInventoryResponse(inventory: Inventory): InventoryDto {
     return {
       id: inventory.id,
       productId: inventory.productId,
@@ -14,6 +14,6 @@ export class InventoryMapper {
       soldQuantity: inventory.soldQuantity,
       createdAt: inventory.createdAt,
       updatedAt: inventory.updatedAt,
-    } 
+    }
   }
 }

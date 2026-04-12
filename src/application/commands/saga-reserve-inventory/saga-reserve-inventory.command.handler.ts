@@ -19,39 +19,51 @@ export class SagaReserveInventoryHandler implements ICommandHandler<SagaReserveI
     private readonly prisma: PrismaService,
   ) {}
 
-  async execute(command: SagaReserveInventoryCommand): Promise<{ success: boolean; reservationIds: string[] }> {
+  async execute(
+    command: SagaReserveInventoryCommand,
+  ): Promise<{ success: boolean; reservationIds: string[] }> {
     const { sagaId, userId, items } = command
     const reservationIds: string[] = []
 
-    await this.prisma.$transaction(async (tx) => {
-      for (const item of items) {
-        // Tìm inventory, throw nếu không có
-        const inventory = await this.inventoryRepository.findByProductVariantIdOrThrow(item.productVariantId, tx)
-
-        // Check số lượng
-        if (inventory.availableQuantity < item.quantity) {
-          throw new Error(
-            `Sản phẩm ${item.productVariantId} không đủ số lượng (còn ${inventory.availableQuantity}, cần ${item.quantity})`,
+    await this.prisma.$transaction(
+      async tx => {
+        for (const item of items) {
+          // Tìm inventory, throw nếu không có
+          const inventory = await this.inventoryRepository.findByProductVariantIdOrThrow(
+            item.productVariantId,
+            tx,
           )
+
+          // Check số lượng
+          if (inventory.availableQuantity < item.quantity) {
+            throw new Error(
+              `Sản phẩm ${item.productVariantId} không đủ số lượng (còn ${inventory.availableQuantity}, cần ${item.quantity})`,
+            )
+          }
+
+          // Cập nhật số lượng inventory
+          await this.inventoryRepository.decrementAvailableAndIncrementReserved(
+            item.productVariantId,
+            item.quantity,
+            tx,
+          )
+
+          // Tạo reservation entity
+          const reservation = Reservation.create({
+            inventoryId: inventory.id,
+            sagaId,
+            userId,
+            quantity: item.quantity,
+          })
+
+          // Lưu reservation
+          await this.reservationRepository.create(reservation, tx)
+
+          reservationIds.push(reservation.id)
         }
-
-        // Cập nhật số lượng inventory
-        await this.inventoryRepository.decrementAvailableAndIncrementReserved(item.productVariantId, item.quantity, tx)
-
-        // Tạo reservation entity
-        const reservation = Reservation.create({
-          inventoryId: inventory.id,
-          sagaId,
-          userId,
-          quantity: item.quantity,
-        })
-
-        // Lưu reservation
-        await this.reservationRepository.create(reservation, tx)
-
-        reservationIds.push(reservation.id)
-      }
-    }, { maxWait: PRISMA_TX_MAX_WAIT, timeout: PRISMA_TX_TIMEOUT })
+      },
+      { maxWait: PRISMA_TX_MAX_WAIT, timeout: PRISMA_TX_TIMEOUT },
+    )
 
     return {
       success: true,

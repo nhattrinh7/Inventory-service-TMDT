@@ -1,5 +1,4 @@
-
-import { Inventory as PrismaInventory} from '@prisma/client'
+import { Inventory as PrismaInventory } from '@prisma/client'
 import { Inventory } from '~/domain/entities/inventory.entity'
 
 export class InventoryMapper {

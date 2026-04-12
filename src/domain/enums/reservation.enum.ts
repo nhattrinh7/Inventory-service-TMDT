@@ -5,4 +5,4 @@ export const ReservationStatus = {
   CANCELLED: 'CANCELLED',
   FAILED: 'FAILED',
 } as const
-  export type ReservationStatus = (typeof ReservationStatus)[keyof typeof ReservationStatus]
+export type ReservationStatus = (typeof ReservationStatus)[keyof typeof ReservationStatus]

@@ -22,26 +22,29 @@ export class SagaReleaseInventoryHandler implements ICommandHandler<SagaReleaseI
   async execute(command: SagaReleaseInventoryCommand): Promise<void> {
     const { reservationIds, failureReason } = command
 
-    await this.prisma.$transaction(async (tx) => {
-      for (const reservationId of reservationIds) {
-        // Tìm reservation
-        const reservation = await this.reservationRepository.findById(reservationId, tx)
+    await this.prisma.$transaction(
+      async tx => {
+        for (const reservationId of reservationIds) {
+          // Tìm reservation
+          const reservation = await this.reservationRepository.findById(reservationId, tx)
 
-        if (!reservation || reservation.status !== ReservationStatus.PENDING) continue
+          if (!reservation || reservation.status !== ReservationStatus.PENDING) continue
 
-        // Cancel reservation (domain logic)
-        reservation.cancel(failureReason)
+          // Cancel reservation (domain logic)
+          reservation.cancel(failureReason)
 
-        // Trả lại số lượng đã giữ về inventory
-        await this.inventoryRepository.incrementAvailableAndDecrementReserved(
-          reservation.inventoryId,
-          reservation.quantity,
-          tx,
-        )
+          // Trả lại số lượng đã giữ về inventory
+          await this.inventoryRepository.incrementAvailableAndDecrementReserved(
+            reservation.inventoryId,
+            reservation.quantity,
+            tx,
+          )
 
-        // Cập nhật trạng thái reservation
-        await this.reservationRepository.update(reservation, tx)
-      }
-    }, { maxWait: PRISMA_TX_MAX_WAIT, timeout: PRISMA_TX_TIMEOUT })
+          // Cập nhật trạng thái reservation
+          await this.reservationRepository.update(reservation, tx)
+        }
+      },
+      { maxWait: PRISMA_TX_MAX_WAIT, timeout: PRISMA_TX_TIMEOUT },
+    )
   }
 }

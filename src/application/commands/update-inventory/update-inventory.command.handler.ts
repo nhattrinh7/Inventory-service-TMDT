@@ -1,8 +1,10 @@
 import { Inject } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { UpdateInventoryCommand } from '~/application/commands/update-inventory/update-inventory.command'
-import { INVENTORY_REPOSITORY, type IInventoryRepository } from '~/domain/repositories/inventory.repository.interface'
-
+import {
+  INVENTORY_REPOSITORY,
+  type IInventoryRepository,
+} from '~/domain/repositories/inventory.repository.interface'
 
 @CommandHandler(UpdateInventoryCommand)
 export class UpdateInventoryHandler implements ICommandHandler<UpdateInventoryCommand, void> {
@@ -16,10 +18,12 @@ export class UpdateInventoryHandler implements ICommandHandler<UpdateInventoryCo
 
     // Business Logic: Lấy inventory hiện tại và tính toán totalQuantity mới
     const variantsWithCalculatedTotal = await Promise.all(
-      variants.map(async (variant) => {
+      variants.map(async variant => {
         // Lấy reservedQuantity hiện tại
-        const inventory = await this.inventoryRepository.findByProductVariantId(variant.productVariantId)
-        
+        const inventory = await this.inventoryRepository.findByProductVariantId(
+          variant.productVariantId,
+        )
+
         if (!inventory) {
           throw new Error(`Inventory not found for productVariantId: ${variant.productVariantId}`)
         }
@@ -32,7 +36,7 @@ export class UpdateInventoryHandler implements ICommandHandler<UpdateInventoryCo
           availableQuantity: variant.stock,
           totalQuantity,
         }
-      })
+      }),
     )
 
     // Repository chỉ thực hiện data access

@@ -6,17 +6,12 @@ import { CreateInventoryCommand } from '~/application/commands/create-inventory/
 
 @Controller()
 export class ProductCreatedConsumer extends BaseRetryConsumer {
-  constructor(
-    private readonly commandBus: CommandBus
-  ) {
+  constructor(private readonly commandBus: CommandBus) {
     super()
   }
 
   @EventPattern('product.created')
-  async handleProductCreated(
-    @Payload() data: any,
-    @Ctx() context: RmqContext,
-  ) {
+  async handleProductCreated(@Payload() data: any, @Ctx() context: RmqContext) {
     await this.handleWithRetry(context, async () => {
       this.logger.log(`Event product.created received, variants=${data.variants?.length}`)
       await this.commandBus.execute(new CreateInventoryCommand(data.variants))

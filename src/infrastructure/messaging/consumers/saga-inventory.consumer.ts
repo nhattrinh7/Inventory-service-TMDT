@@ -19,7 +19,8 @@ export class SagaInventoryConsumer extends BaseRetryConsumer {
 
   @EventPattern('saga.reserve-inventory')
   async handleReserveInventory(
-    @Payload() data: {
+    @Payload()
+    data: {
       sagaId: string
       userId: string
       items: Array<{ productVariantId: string; quantity: number }>
@@ -50,7 +51,8 @@ export class SagaInventoryConsumer extends BaseRetryConsumer {
 
   @EventPattern('saga.release-inventory')
   async handleReleaseInventory(
-    @Payload() data: {
+    @Payload()
+    data: {
       sagaId: string
       reservationIds: string[]
       failureReason: string

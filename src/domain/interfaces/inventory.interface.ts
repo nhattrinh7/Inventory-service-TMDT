@@ -5,7 +5,7 @@ export interface StockItem {
 }
 
 export interface ProductStock {
-  productId: string 
+  productId: string
   variants: StockItem[]
 }
 

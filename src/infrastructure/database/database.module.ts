@@ -19,11 +19,6 @@ import { CqrsModule } from '@nestjs/cqrs'
       useClass: ReservationRepository,
     },
   ],
-  exports: [
-    PrismaService,
-    INVENTORY_REPOSITORY,
-    RESERVATION_REPOSITORY,
-  ],
+  exports: [PrismaService, INVENTORY_REPOSITORY, RESERVATION_REPOSITORY],
 })
 export class DatabaseModule {}
-

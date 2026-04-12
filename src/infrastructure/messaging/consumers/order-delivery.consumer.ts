@@ -7,15 +7,14 @@ import { DeliveryFailInventoryCommand } from '~/application/commands/delivery-fa
 
 @Controller()
 export class OrderDeliveryConsumer extends BaseRetryConsumer {
-  constructor(
-    private readonly commandBus: CommandBus
-  ) {
+  constructor(private readonly commandBus: CommandBus) {
     super()
   }
 
   @EventPattern('inventory.delivery-success')
   async handleDeliverySuccess(
-    @Payload() data: { orderId: string; items: Array<{ productVariantId: string; quantity: number }> },
+    @Payload()
+    data: { orderId: string; items: Array<{ productVariantId: string; quantity: number }> },
     @Ctx() context: RmqContext,
   ) {
     await this.handleWithRetry(context, async () => {
@@ -26,7 +25,8 @@ export class OrderDeliveryConsumer extends BaseRetryConsumer {
 
   @EventPattern('inventory.delivery-fail')
   async handleDeliveryFail(
-    @Payload() data: { orderId: string; items: Array<{ productVariantId: string; quantity: number }> },
+    @Payload()
+    data: { orderId: string; items: Array<{ productVariantId: string; quantity: number }> },
     @Ctx() context: RmqContext,
   ) {
     await this.handleWithRetry(context, async () => {

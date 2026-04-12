@@ -1,7 +1,6 @@
 import { createZodDto } from 'nestjs-zod'
 import z from 'zod'
 
-
 export const InventorySchema = z.object({
   id: z.uuid(),
   productId: z.uuid(),

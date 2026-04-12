@@ -10,9 +10,7 @@ export class InventoryRepository implements IInventoryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async createMany(inventories: Inventory[]): Promise<void> {
-    const inventoryRecords = inventories.map(inventory =>
-      InventoryMapper.toPersistence(inventory)
-    )
+    const inventoryRecords = inventories.map(inventory => InventoryMapper.toPersistence(inventory))
     await this.prisma.inventory.createMany({
       data: inventoryRecords,
     })
@@ -61,7 +59,7 @@ export class InventoryRepository implements IInventoryRepository {
 
   async findByProductVariantId(productVariantId: string): Promise<Inventory | null> {
     const inventory = await this.prisma.inventory.findFirst({
-      where: { 
+      where: {
         productVariantId,
         isDeleted: false,
       },
@@ -81,7 +79,9 @@ export class InventoryRepository implements IInventoryRepository {
     })
   }
 
-  async updateStocks(variants: Array<{ productVariantId: string; availableQuantity: number; totalQuantity: number }>): Promise<void> {
+  async updateStocks(
+    variants: Array<{ productVariantId: string; availableQuantity: number; totalQuantity: number }>,
+  ): Promise<void> {
     // Chỉ thực hiện data access, không có business logic
     await Promise.all(
       variants.map(variant =>
@@ -92,12 +92,14 @@ export class InventoryRepository implements IInventoryRepository {
             totalQuantity: variant.totalQuantity,
             updatedAt: new Date(),
           },
-        })
-      )
+        }),
+      ),
     )
   }
 
-  async getBuyCountAndIsInStockByVariantIds(productVariantIds: string[]): Promise<{ buyCount: number; isInStock: boolean }> {
+  async getBuyCountAndIsInStockByVariantIds(
+    productVariantIds: string[],
+  ): Promise<{ buyCount: number; isInStock: boolean }> {
     const inventories = await this.prisma.inventory.findMany({
       where: {
         productVariantId: {
@@ -113,14 +115,16 @@ export class InventoryRepository implements IInventoryRepository {
 
     // Tính tổng soldQuantity
     const buyCount = inventories.reduce((sum, inv) => sum + inv.soldQuantity, 0)
-    
+
     // isInStock = true nếu ít nhất 1 variant có availableQuantity > 0
     const isInStock = inventories.some(inv => inv.availableQuantity > 0)
 
     return { buyCount, isInStock }
   }
 
-  async checkInventory(items: Array<{ productVariantId: string; quantity: number }>): Promise<void> {
+  async checkInventory(
+    items: Array<{ productVariantId: string; quantity: number }>,
+  ): Promise<void> {
     for (const item of items) {
       const inventory = await this.prisma.inventory.findUnique({
         where: { productVariantId: item.productVariantId },
@@ -131,7 +135,9 @@ export class InventoryRepository implements IInventoryRepository {
       }
 
       if (inventory.availableQuantity < item.quantity) {
-        throw new Error(`Sản phẩm ${item.productVariantId} không đủ số lượng (còn ${inventory.availableQuantity}, cần ${item.quantity})`)
+        throw new Error(
+          `Sản phẩm ${item.productVariantId} không đủ số lượng (còn ${inventory.availableQuantity}, cần ${item.quantity})`,
+        )
       }
     }
   }
@@ -149,7 +155,11 @@ export class InventoryRepository implements IInventoryRepository {
     return InventoryMapper.toDomain(inventory)
   }
 
-  async decrementAvailableAndIncrementReserved(productVariantId: string, quantity: number, tx?: any): Promise<void> {
+  async decrementAvailableAndIncrementReserved(
+    productVariantId: string,
+    quantity: number,
+    tx?: any,
+  ): Promise<void> {
     const client = tx ?? this.prisma
     await client.inventory.update({
       where: { productVariantId },
@@ -160,7 +170,11 @@ export class InventoryRepository implements IInventoryRepository {
     })
   }
 
-  async incrementAvailableAndDecrementReserved(inventoryId: string, quantity: number, tx?: any): Promise<void> {
+  async incrementAvailableAndDecrementReserved(
+    inventoryId: string,
+    quantity: number,
+    tx?: any,
+  ): Promise<void> {
     const client = tx ?? this.prisma
     await client.inventory.update({
       where: { id: inventoryId },
@@ -171,7 +185,11 @@ export class InventoryRepository implements IInventoryRepository {
     })
   }
 
-  async updateQuantityAfterDeliverySuccess(productVariantId: string, quantity: number, tx?: any): Promise<void> {
+  async updateQuantityAfterDeliverySuccess(
+    productVariantId: string,
+    quantity: number,
+    tx?: any,
+  ): Promise<void> {
     const client = tx ?? this.prisma
     await client.inventory.update({
       where: { productVariantId },
@@ -183,7 +201,11 @@ export class InventoryRepository implements IInventoryRepository {
     })
   }
 
-  async updateQuantityAfterDeliveryFail(productVariantId: string, quantity: number, tx?: any): Promise<void> {
+  async updateQuantityAfterDeliveryFail(
+    productVariantId: string,
+    quantity: number,
+    tx?: any,
+  ): Promise<void> {
     const client = tx ?? this.prisma
     await client.inventory.update({
       where: { productVariantId },
@@ -194,4 +216,3 @@ export class InventoryRepository implements IInventoryRepository {
     })
   }
 }
-

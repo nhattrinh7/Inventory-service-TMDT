@@ -1,6 +1,9 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs'
 import { Inject } from '@nestjs/common'
-import { INVENTORY_REPOSITORY, type IInventoryRepository } from '~/domain/repositories/inventory.repository.interface'
+import {
+  INVENTORY_REPOSITORY,
+  type IInventoryRepository,
+} from '~/domain/repositories/inventory.repository.interface'
 
 import { CheckInventoryToPlusQuery } from './check-inventory-to-plus.query'
 
@@ -10,10 +13,12 @@ type CheckInventoryToPlusResponseType = {
 }
 
 @QueryHandler(CheckInventoryToPlusQuery)
-export class CheckInventoryToPlusHandler implements IQueryHandler<CheckInventoryToPlusQuery, CheckInventoryToPlusResponseType> {
+export class CheckInventoryToPlusHandler
+  implements IQueryHandler<CheckInventoryToPlusQuery, CheckInventoryToPlusResponseType>
+{
   constructor(
     @Inject(INVENTORY_REPOSITORY)
-      private readonly inventoryRepository: IInventoryRepository,
+    private readonly inventoryRepository: IInventoryRepository,
   ) {}
 
   async execute(query: CheckInventoryToPlusQuery): Promise<CheckInventoryToPlusResponseType> {
@@ -26,7 +31,7 @@ export class CheckInventoryToPlusHandler implements IQueryHandler<CheckInventory
     if (!inventory) {
       return {
         isPlusSuccess: false,
-        quantity: 0
+        quantity: 0,
       }
     }
 
@@ -35,14 +40,14 @@ export class CheckInventoryToPlusHandler implements IQueryHandler<CheckInventory
       // Vượt quá: trả về isPlusSuccess=false và quantity=availableQuantity
       return {
         isPlusSuccess: false,
-        quantity: inventory.availableQuantity
+        quantity: inventory.availableQuantity,
       }
     }
 
     // Không vượt: trả về isPlusSuccess=true và quantity=số lượng mong muốn
     return {
       isPlusSuccess: true,
-      quantity: quantity
+      quantity: quantity,
     }
   }
 }

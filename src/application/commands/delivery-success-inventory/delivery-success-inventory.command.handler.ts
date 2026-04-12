@@ -6,7 +6,9 @@ import { INVENTORY_REPOSITORY } from '~/domain/repositories/inventory.repository
 import { PrismaService } from '~/infrastructure/database/prisma/prisma.service'
 
 @CommandHandler(DeliverySuccessInventoryCommand)
-export class DeliverySuccessInventoryHandler implements ICommandHandler<DeliverySuccessInventoryCommand> {
+export class DeliverySuccessInventoryHandler
+  implements ICommandHandler<DeliverySuccessInventoryCommand>
+{
   constructor(
     @Inject(INVENTORY_REPOSITORY)
     private readonly inventoryRepository: IInventoryRepository,
@@ -17,14 +19,17 @@ export class DeliverySuccessInventoryHandler implements ICommandHandler<Delivery
     const { items } = command
     if (!items || items.length === 0) return
 
-    await this.prisma.$transaction(async (tx) => {
-      for (const item of items) {
-        await this.inventoryRepository.updateQuantityAfterDeliverySuccess(
-          item.productVariantId,
-          item.quantity,
-          tx,
-        )
-      }
-    }, { maxWait: 10000, timeout: 15000 })
+    await this.prisma.$transaction(
+      async tx => {
+        for (const item of items) {
+          await this.inventoryRepository.updateQuantityAfterDeliverySuccess(
+            item.productVariantId,
+            item.quantity,
+            tx,
+          )
+        }
+      },
+      { maxWait: 10000, timeout: 15000 },
+    )
   }
 }

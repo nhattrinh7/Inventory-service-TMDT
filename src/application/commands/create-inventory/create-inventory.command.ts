@@ -7,6 +7,6 @@ export class CreateInventoryCommand implements ICommand {
       productVariantId: string
       stock: number
       shopId: string
-    }>
+    }>,
   ) {}
 }

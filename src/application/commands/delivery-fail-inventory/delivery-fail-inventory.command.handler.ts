@@ -17,14 +17,17 @@ export class DeliveryFailInventoryHandler implements ICommandHandler<DeliveryFai
     const { items } = command
     if (!items || items.length === 0) return
 
-    await this.prisma.$transaction(async (tx) => {
-      for (const item of items) {
-        await this.inventoryRepository.updateQuantityAfterDeliveryFail(
-          item.productVariantId,
-          item.quantity,
-          tx,
-        )
-      }
-    }, { maxWait: 10000, timeout: 15000 })
+    await this.prisma.$transaction(
+      async tx => {
+        for (const item of items) {
+          await this.inventoryRepository.updateQuantityAfterDeliveryFail(
+            item.productVariantId,
+            item.quantity,
+            tx,
+          )
+        }
+      },
+      { maxWait: 10000, timeout: 15000 },
+    )
   }
 }

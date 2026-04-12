@@ -5,6 +5,6 @@ export class UpdateInventoryCommand implements ICommand {
     public readonly variants: Array<{
       productVariantId: string
       stock: number
-    }>
+    }>,
   ) {}
 }

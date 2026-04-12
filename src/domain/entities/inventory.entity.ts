@@ -35,5 +35,5 @@ export class Inventory extends AggregateRoot {
     )
 
     return inventory
-  } 
+  }
 }

@@ -5,17 +5,36 @@ export interface IInventoryRepository {
   createMany(inventories: Inventory[]): Promise<void>
   getStocksByProductIds(productIds: string[]): Promise<GetStocksResponseType>
   findByProductVariantId(productVariantId: string): Promise<Inventory | null>
-  updateStocks(variants: Array<{ productVariantId: string; availableQuantity: number; totalQuantity: number }>): Promise<void>
+  updateStocks(
+    variants: Array<{ productVariantId: string; availableQuantity: number; totalQuantity: number }>,
+  ): Promise<void>
   softDeleteByVariantIds(variantIds: string[]): Promise<void>
-  getBuyCountAndIsInStockByVariantIds(productVariantIds: string[]): Promise<{ buyCount: number; isInStock: boolean }>
+  getBuyCountAndIsInStockByVariantIds(
+    productVariantIds: string[],
+  ): Promise<{ buyCount: number; isInStock: boolean }>
   checkInventory(items: Array<{ productVariantId: string; quantity: number }>): Promise<void>
 
   // Saga atomic operations
   findByProductVariantIdOrThrow(productVariantId: string, tx?: any): Promise<Inventory>
-  decrementAvailableAndIncrementReserved(productVariantId: string, quantity: number, tx?: any): Promise<void>
-  incrementAvailableAndDecrementReserved(inventoryId: string, quantity: number, tx?: any): Promise<void>
-  updateQuantityAfterDeliverySuccess(productVariantId: string, quantity: number, tx?: any): Promise<void>
-  updateQuantityAfterDeliveryFail(productVariantId: string, quantity: number, tx?: any): Promise<void>
+  decrementAvailableAndIncrementReserved(
+    productVariantId: string,
+    quantity: number,
+    tx?: any,
+  ): Promise<void>
+  incrementAvailableAndDecrementReserved(
+    inventoryId: string,
+    quantity: number,
+    tx?: any,
+  ): Promise<void>
+  updateQuantityAfterDeliverySuccess(
+    productVariantId: string,
+    quantity: number,
+    tx?: any,
+  ): Promise<void>
+  updateQuantityAfterDeliveryFail(
+    productVariantId: string,
+    quantity: number,
+    tx?: any,
+  ): Promise<void>
 }
 export const INVENTORY_REPOSITORY = Symbol('IInventoryRepository')
-
