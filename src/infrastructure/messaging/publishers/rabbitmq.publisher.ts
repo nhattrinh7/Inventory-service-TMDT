@@ -21,12 +21,12 @@ export class RabbitMQPublisher implements IMessagePublisher {
   }
 
   publish<T>(pattern: string, event: T): void {
-    this.logger.debug(`[${getKongRequestId()}] Emit ${pattern} → notification-service`)
+    this.logger.log(`[${getKongRequestId()}] Emit ${pattern} → notification-service`)
     this.notificationClient.emit(pattern, this.buildRecord(event))
   }
 
   emitToSagaOrchestrator<T>(pattern: string, event: T): void {
-    this.logger.debug(`[${getKongRequestId()}] Emit ${pattern} → saga-orchestrator`)
+    this.logger.log(`[${getKongRequestId()}] Emit ${pattern} → saga-orchestrator`)
     this.sagaClient.emit(pattern, this.buildRecord(event))
   }
 }
