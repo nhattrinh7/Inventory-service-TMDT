@@ -12,6 +12,7 @@ export interface IInventoryRepository {
   getBuyCountAndIsInStockByVariantIds(
     productVariantIds: string[],
   ): Promise<{ buyCount: number; isInStock: boolean }>
+  getProductStockStats(productId: string): Promise<{ buyCount: number; isInStock: boolean }>
   checkInventory(items: Array<{ productVariantId: string; quantity: number }>): Promise<void>
 
   // Saga atomic operations

@@ -122,6 +122,24 @@ export class InventoryRepository implements IInventoryRepository {
     return { buyCount, isInStock }
   }
 
+  async getProductStockStats(productId: string): Promise<{ buyCount: number; isInStock: boolean }> {
+    const inventories = await this.prisma.inventory.findMany({
+      where: {
+        productId,
+        isDeleted: false,
+      },
+      select: {
+        soldQuantity: true,
+        availableQuantity: true,
+      },
+    })
+
+    const buyCount = inventories.reduce((sum, inv) => sum + inv.soldQuantity, 0)
+    const isInStock = inventories.some(inv => inv.availableQuantity > 0)
+
+    return { buyCount, isInStock }
+  }
+
   async checkInventory(
     items: Array<{ productVariantId: string; quantity: number }>,
   ): Promise<void> {

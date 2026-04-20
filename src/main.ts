@@ -49,6 +49,18 @@ async function bootstrap() {
     },
   })
 
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: [process.env.KAFKA_BROKERS || 'kafka:9092'],
+      },
+      consumer: {
+        groupId: 'inventory-service-consumer',
+      },
+    },
+  })
+
   await app.startAllMicroservices()
 
   await app.listen(env.config.PORT ?? 3007)

@@ -9,10 +9,15 @@ import { GetStocksConsumer } from '~/infrastructure/messaging/consumers/get-stoc
 import { GetBuyCountConsumer } from '~/infrastructure/messaging/consumers/get-buy-count.consumer'
 import { SagaInventoryConsumer } from '~/infrastructure/messaging/consumers/saga-inventory.consumer'
 import { OrderDeliveryConsumer } from '~/infrastructure/messaging/consumers/order-delivery.consumer'
+import { InventoryCdcConsumer } from '~/infrastructure/messaging/consumers/inventory-cdc.consumer'
+import { DatabaseModule } from '~/infrastructure/database/database.module'
+import { ElasticsearchModule } from '~/infrastructure/elasticsearch/elasticsearch.module'
 
 @Module({
   imports: [
     CqrsModule,
+    DatabaseModule,
+    ElasticsearchModule,
     ClientsModule.register([
       {
         name: 'NOTIFICATION_CLIENT',
@@ -41,6 +46,7 @@ import { OrderDeliveryConsumer } from '~/infrastructure/messaging/consumers/orde
     GetBuyCountConsumer,
     SagaInventoryConsumer,
     OrderDeliveryConsumer,
+    InventoryCdcConsumer,
   ],
   providers: [
     {
